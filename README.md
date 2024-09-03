@@ -1,6 +1,39 @@
 # WeatherStation2HomeAssisant
 How to load Weatherstation data into Home Asisstant
 
+## Purpose of this project
+Home Assistant is a very nice project that allows you to consolidate your domotica but also create automations and scripts.
+https://www.home-assistant.io/
+As I have installed blinds and I'm an astrophotographer, it would be nice to get real-time weather statistics from my garden to control my home.
+
+Therefore, I bought the VEVOR Weatherstation, wifi, 7-in-1.
+<picture>
+<img alt="Weatherstation" src="https://m.media-amazon.com/images/I/71GFLwGSbaL._SL1500_.jpg">
+</picture>
+
+However this weatherstation is sold as a station that will synchronize with Internet, it doesn't support any API's. :(
+The way this weatherstation will sync is to upload his data to two weather websites:
+- weathercloud (https://weathercloud.net/en)
+- Weather Underground (https://www.wunderground.com/)
+
+Assuming that this would mean I can get my information from these webites but ....  weathercloud has no API's and Weather Underground stopped delivering API's. :(
+
+## How did I resolve the problem?
+When I connected the Weatherstation to Weathercloud, I noticed that all information is available in a webpage but this page is build (on purpose) dynamical so you can't just parse the page easily.
+At the same time, the default page of your weatherstation is not showing the temp in a text format but embedded in a graphical component.
+When browsing the website, I found that the weatherstation information via the map is much easier to grap but you need to be able to click the "cookie" button and parse dynamic content.
+https://app.weathercloud.net/map#8283373349
+
+A good application to parse a dynamic page is with Selenium on Python.
+Uploading the parsed information to Home Assistant is done via MQTT. (Mosquitto MQTT, Note: don't forget to create an additional user account to upload to mqtt)
+
+End result is following view on my Home Assistant:
+
+<picture>
+<img alt="Weatherstation" src="https://github.com/HenkUyttenhove/WeatherStation2HomeAssisant/blob/main/dashboard.jpg">
+</picture>
+
+
 
 
 
