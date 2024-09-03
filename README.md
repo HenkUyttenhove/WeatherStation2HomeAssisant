@@ -33,33 +33,36 @@ End result is following view on my Home Assistant:
 <img alt="Weatherstation" src="https://github.com/HenkUyttenhove/WeatherStation2HomeAssisant/blob/main/dashboard.jpg">
 </picture>
 
+## Workstream for making this happen
+- Install Alpine Linux (as Docker server)
+- Install Docker on Alpine
+- Install Selenium on Docker with Chrome-support
+- Install Python
+- Install MQTT on Python and create Python code for parsing information and upload to Home Assistant
 
 
+  ### Commands for installation of Alpine Linux
+install Alpine linux
+- https://alpinelinux.org/downloads/
 
+Update and install docker on Alpine linux
+- apk update
+- apk add docker
+- addgroup $user docker  #add yourself to the users of docker
+- rc-update add docker default
+- service docker start
+- apk add docker-cli-compose
+- docker run -d -p 4444:4444 -p 7900:7900 --shm-size="2g" selenium/standalone-chrome:latest #run docker for selenium
 
-Howto parse a weatherstation on Weathercloud website.
+### Install python
+- apk add python3
+- apk add py3-pip
+- apk add py3-paho-mqtt
+- pip3 install -U selenium –break-system-packages
 
-- install Alpine linux
-https://alpinelinux.org/downloads/
-
-- Update and install docker on Alpine linux
-apk update
-apk add docker
-addgroup $user docker  #add yourself to the users of docker
-rc-update add docker default
-service docker start
-apk add docker-cli-compose
-docker run -d -p 4444:4444 -p 7900:7900 --shm-size="2g" selenium/standalone-chrome:latest #run docker for selenium
-
-- Install python
-apk add python3
-apk add py3-pip
-apk add py3-paho-mqtt
-pip3 install -U selenium –break-system-packages
-
-- Install the code
+### Install the Python code
 /home/henk # cat Weatherstation.py 
-#   Code to fetch the weather details from the weatherCloud website
+```#   Code to fetch the weather details from the weatherCloud website
 #
 #   Created by Henk Uyttenhove - 24/08/24
 
@@ -88,8 +91,6 @@ client = paho.Client()
 client.on_connect = on_connect
 client.username_pw_set(username,password)
 client.connect(broker, port)
-
-
 
 #client.connect("14b5793c334743769b3e9fb1e4008401.s2.eu.hivemq.cloud", 8883)
 #client.publish("encyclopedia/temperature", payload="hot", qos=1)
@@ -174,16 +175,17 @@ client.publish(topic+"Rain", payload=Rain, qos=1)
 client.publish(topic+"RainSpeed", payload=RainSpeed, qos=1)
 client.publish(topic+"SolarIntensity", payload=SolarIntensity, qos=1)
 client.publish(topic+"UVIntensity", payload=UVIntensity, qos=1)
+```
 
+### Activate the script every 5 min
 /home/henk # crontab -l
-# do daily/weekly/monthly maintenance
+```# do daily/weekly/monthly maintenance
 # min	hour	day	month	weekday	command
 */5	*	*	*	*	/usr/bin/python3 /home/henk/Weatherstation.py
-
--activate in HomeAssistant
-
+```
+### Activate of HomeAssistant
 MQTT.yaml:
-
+```
 sensor:
 - name: "NINA Sequence Status"
 state_topic: "Astro/NINA/sequencestatus"
@@ -234,7 +236,9 @@ unit_of_measurement: "mm/h"
 
 - name: "UVIntensity"
 state_topic: "weatherstation/UVIntensity"
+```
 
 configuration.yaml:
-
+```
 mqtt: !include mqtt.yaml
+```
