@@ -182,6 +182,7 @@ client.publish(topic+"UVIntensity", payload=UVIntensity, qos=1)
 ```# do daily/weekly/monthly maintenance
 # min	hour	day	month	weekday	command
 */5	*	*	*	*	/usr/bin/python3 /home/henk/Weatherstation.py
+0 	3 	* 	* 	0 	/usr/bin/docker system prune -af --volumes #clean up the tmp on weekly scheme
 ```
 ### Activate of HomeAssistant
 MQTT.yaml:
